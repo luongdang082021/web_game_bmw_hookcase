@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>BMW X3 Hookcase — Pixel Racer</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="hud-group">
+        <div class="hud-item" id="hud-tree">
+          <span class="hud-icon">🌳</span>
+          <span class="hud-label">Tông cây</span>
+          <span class="hud-check" id="check-tree">✕</span>
+        </div>
+        <div class="hud-item" id="hud-target">
+          <span class="hud-icon">👨‍👧</span>
+          <span class="hud-label">Bố chở con</span>
+          <span class="hud-check" id="check-target">✕</span>
+        </div>
+      </div>
+      <div class="hud-group">
+        <div class="hud-item">
+          <span class="hud-icon">🛣️</span>
+          <span class="hud-label" id="hud-distance">0 m</span>
+        </div>
+        <button id="btn-restart" class="hud-btn">↺ Chơi lại</button>
+      </div>
+    </header>
+
+    <div id="stage">
+      <canvas id="game" width="480" height="760"></canvas>
+
+      <div id="overlay">
+        <div id="overlay-card">
+          <h1 id="overlay-title">BMW X3 Hookcase</h1>
+          <p id="overlay-text">
+            Kéo chuột (hoặc chạm) để lái xe, hoặc dùng phím mũi tên / WASD.<br>
+            Nhiệm vụ: <b>tông trúng cây bên đường</b> và <b>tông trúng xe của bố đang chở con gái</b>.<br>
+            Tông nhầm bất kỳ xe nào khác — <b>thua ngay!</b>
+          </p>
+          <div id="legend"></div>
+          <button id="btn-start" class="hud-btn primary">▶ Bắt đầu</button>
+        </div>
+      </div>
+
+      <div id="toast" class="hidden"></div>
+    </div>
+
+    <footer id="foot">
+      <span>Phím mũi tên / WASD để lái · Kéo chuột hoặc chạm màn hình để điều khiển trực tiếp</span>
+    </footer>
+  </div>
+
+  <script src="js/sprites.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

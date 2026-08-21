@@ -35,6 +35,44 @@ const Sprites = (() => {
     [1, 19, 6, 1, '#2b323d'],
   ]);
 
+  // -------------------------------------------------------------- BUSH ----
+  const bush = sprite(11, 8, [
+    [1, 2, 9, 4, '#2f8f4e'],
+    [0, 3, 4, 3, '#276f3e'],
+    [7, 3, 4, 3, '#276f3e'],
+    [3, 1, 5, 2, '#45b06a'],
+    [2, 6, 7, 2, '#1f5c33'],
+  ]);
+
+  // -------------------------------------------------------------- ROCK ----
+  const rock = sprite(9, 6, [
+    [1, 1, 7, 4, '#8b8f96'],
+    [0, 3, 3, 3, '#6f747c'],
+    [5, 0, 4, 3, '#a3a8b0'],
+    [2, 4, 5, 2, '#5c6067'],
+  ]);
+
+  // --------------------------------------------------------------- SIGN ---
+  const sign = sprite(9, 20, [
+    [3, 8, 2, 11, '#7a828d'],
+    [0, 0, 9, 7, '#f4c531'],
+    [0, 0, 9, 1, '#1a1a1a'],
+    [0, 6, 9, 1, '#1a1a1a'],
+    [0, 0, 1, 7, '#1a1a1a'],
+    [8, 0, 1, 7, '#1a1a1a'],
+    [2, 2, 5, 3, '#1a1a1a'],
+    [1, 19, 7, 1, '#2b323d'],
+  ]);
+
+  // -------------------------------------------------------------- CLOUD ---
+  const cloud = sprite(20, 9, [
+    [2, 4, 16, 4, '#ffffff'],
+    [4, 2, 8, 3, '#ffffff'],
+    [10, 1, 8, 4, '#ffffff'],
+    [0, 5, 6, 3, '#eef3f9'],
+    [13, 5, 7, 3, '#eef3f9'],
+  ]);
+
   // ---------------------------------------------------------- BMW PLAYER --
   const bmw = sprite(22, 24, [
     // body silhouette
@@ -61,6 +99,9 @@ const Sprites = (() => {
     // bumper + grille
     [5, 16, 12, 2, '#eef0f2'],
     [5, 18, 12, 1, '#1a1d22'],
+    // twin-kidney grille accents (BMW signature)
+    [9, 17, 2, 3, '#0a0b0d'],
+    [11, 17, 2, 3, '#0a0b0d'],
     // wheel shadows
     [1, 21, 5, 2, '#8a8f96'],
     [16, 21, 5, 2, '#8a8f96'],
@@ -85,6 +126,7 @@ const Sprites = (() => {
     [13, 8, 3, 3, '#22315a'],
     [12, 1, 5, 3, '#f2c49b'],
     [12, 0, 5, 1, '#271b12'],
+    [13, 4, 2, 2, '#e0342f'],
   ]);
 
   // --------------------------------------------------- TARGET: DORAEMON + NOBITA --
@@ -104,6 +146,9 @@ const Sprites = (() => {
     [6, 9, 1, 1, '#ffffff'],
     [9, 9, 1, 1, '#ffffff'],
     [7, 10, 1, 1, '#e0342f'],
+    [7, 14, 2, 2, '#f5d13a'],
+    [3, 12, 2, 1, '#ffffff'],
+    [12, 12, 2, 1, '#ffffff'],
     // nobita
     [11, 10, 6, 11, '#3a6bc4'],
     [12, 7, 4, 4, '#f2c49b'],
@@ -127,6 +172,8 @@ const Sprites = (() => {
     [7, 0, 7, 2, '#1a1a1a'],
     [5, 10, 2, 4, '#f2c49b'],
     [15, 10, 2, 4, '#f2c49b'],
+    [9, 3, 1, 1, '#7a2a1a'],
+    [7, 8, 9, 1, '#c9a02a'],
   ]);
 
   // --------------------------------------------------- TARGET: NARUTO + KURAMA --
@@ -148,6 +195,10 @@ const Sprites = (() => {
     [7, 0, 7, 1, '#f5d13a'],
     [7, 1, 7, 1, '#1e5fbf'],
     [9, 1, 3, 1, '#c9c9c9'],
+    [8, 3, 1, 1, '#8a1a1a'],
+    [11, 3, 1, 1, '#8a1a1a'],
+    [8, 13, 1, 1, '#1a1a1a'],
+    [11, 13, 1, 1, '#1a1a1a'],
   ]);
 
   // --------------------------------------------------- TARGET: COUPLE (girl piggyback on guy) --
@@ -166,6 +217,11 @@ const Sprites = (() => {
     [6, 4, 8, 6, '#ff6fa5'],
     [4, 5, 2, 2, '#f2c49b'],
     [14, 5, 2, 2, '#f2c49b'],
+    // little heart above the couple
+    [7, -3, 2, 1, '#ff4f7d'],
+    [11, -3, 2, 1, '#ff4f7d'],
+    [6, -2, 8, 2, '#ff4f7d'],
+    [8, 0, 4, 1, '#ff4f7d'],
   ]);
 
   const TARGET_TYPES = {
@@ -206,7 +262,10 @@ const Sprites = (() => {
     },
   };
 
-  function draw(ctx, spr, x, y, unit, flip) {
+  // Draws a sprite with a dark ink outline pass underneath so shapes stay
+  // crisp and readable at small scale / against any background.
+  function draw(ctx, spr, x, y, unit, flip, opts) {
+    opts = opts || {};
     const w = spr.gridW * unit;
     const h = spr.gridH * unit;
     const left = x - w / 2;
@@ -216,6 +275,18 @@ const Sprites = (() => {
       ctx.translate(x, 0);
       ctx.scale(-1, 1);
       ctx.translate(-x, 0);
+    }
+    if (opts.outline !== false) {
+      const pad = Math.max(0.8, unit * 0.3);
+      ctx.fillStyle = opts.outlineColor || 'rgba(8,9,13,0.85)';
+      for (const [c, r, cw, ch] of spr.blocks) {
+        ctx.fillRect(
+          Math.round(left + c * unit - pad),
+          Math.round(top + r * unit - pad),
+          Math.ceil(cw * unit + pad * 2),
+          Math.ceil(ch * unit + pad * 2)
+        );
+      }
     }
     for (const [c, r, cw, ch, color] of spr.blocks) {
       ctx.fillStyle = color;
@@ -230,5 +301,5 @@ const Sprites = (() => {
     return { w, h, left, top };
   }
 
-  return { tree, lamp, bmw, TARGET_TYPES, draw };
+  return { tree, lamp, bush, rock, sign, cloud, bmw, TARGET_TYPES, draw };
 })();
